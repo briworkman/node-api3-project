@@ -70,7 +70,15 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-  // do your magic!
+  const posts = req.body;
+
+  if (!posts.user_id) {
+    res.status(400).json({ message: "Missing user data" });
+  } else if (!posts.text) {
+    res.status(400).json({ message: "Missing required text field" });
+  } else {
+    next();
+  }
 }
 
 module.exports = router;
