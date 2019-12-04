@@ -1,6 +1,8 @@
 const express = require("express");
 const helmet = require("helmet");
 
+const userRouter = require("./users/userRouter");
+
 const server = express();
 
 server.get("/", (req, res) => {
@@ -10,8 +12,14 @@ server.get("/", (req, res) => {
 //custom middleware
 
 function logger(req, res, next) {
-  console.log(`${req.method} to ${req.originalUrl}`);
+  console.log(
+    `${req.method} to ${req.originalUrl} at [${new Date().toISOString()}]`
+  );
   next();
 }
+
+server.use(helmet());
+server.use(express.json());
+server.use(logger);
 
 module.exports = server;
