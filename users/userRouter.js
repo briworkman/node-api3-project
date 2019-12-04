@@ -2,6 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
+const userDb = require("./userDb");
+const postDb = require("../posts/postDb");
+
 router.post("/", (req, res) => {
   // do your magic!
 });
@@ -55,7 +58,15 @@ function validateUserId(req, res, next) {
 }
 
 function validateUser(req, res, next) {
-  // do your magic!
+  const newUser = req.body;
+
+  if (!newUser) {
+    res.status(400).json({ message: "Missing user data" });
+  } else if (!newUser.name) {
+    res.status(400).json({ message: "Missing required name field" });
+  } else {
+    next();
+  }
 }
 
 function validatePost(req, res, next) {

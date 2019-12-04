@@ -1,8 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
 
-const userRouter = require("./users/userRouter");
-
 const server = express();
 
 server.get("/", (req, res) => {
