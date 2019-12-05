@@ -2,35 +2,104 @@ const express = require("express");
 
 const router = express.Router();
 
-const userDb = require("./userDb");
-const postDb = require("../posts/postDb");
+const Users = require("./userDb");
+const Posts = require("../posts/postDb");
 
-router.post("/", (req, res) => {
-  // do your magic!
+router.use(express.json());
+
+router.post("/", validateUser, (req, res) => {
+  Users.insert(req.body)
+    .then(user => {
+      res.status(201).json(user);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ errorMessage: "Error adding the user" });
+    });
 });
 
 router.post("/:id/posts", (req, res) => {
-  // do your magic!
+  const postInfo = { ...req.body, user_id: req.params.id };
+
+  Posts.insert(postInfo)
+    .then(post => {
+      res.status(201).json(post);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ errorMessage: "Error posting this post" });
+    });
 });
 
 router.get("/", (req, res) => {
-  // do your magic!
+  Users.get(req.query)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: "Error retrieving the user" });
+    });
 });
 
 router.get("/:id", (req, res) => {
-  // do your magic!
+  Users.getById(req.params.id)
+    .then(user => {
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: "Error retrieving the user" });
+    });
 });
 
 router.get("/:id/posts", (req, res) => {
-  // do your magic!
+  Users.getUserPosts(req.params.id)
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(error => {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: "Error getting the posts for this user" });
+    });
 });
 
 router.delete("/:id", (req, res) => {
-  // do your magic!
+  Users.remove(req.params.id)
+    .then(user => {
+      if (user > 0) {
+        res
+          .status(200)
+          .json({ message: "The user has been deleted successfully" });
+      } else {
+        res.status(400).json({ message: "The user could not be found" });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: "Error removing the user" });
+    });
 });
 
 router.put("/:id", (req, res) => {
-  // do your magic!
+  Users.update(req.params.id, req.body)
+    .then(user => {
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: "The user could not be found" });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: "Error updating the user" });
+    });
 });
 
 //custom middleware

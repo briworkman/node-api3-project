@@ -1,6 +1,8 @@
 const express = require("express");
 const helmet = require("helmet");
 
+const userRouter = require("./users/userRouter");
+
 const server = express();
 
 server.get("/", (req, res) => {
@@ -19,5 +21,7 @@ function logger(req, res, next) {
 server.use(helmet());
 server.use(express.json());
 server.use(logger);
+
+server.use("/api/users", userRouter);
 
 module.exports = server;
